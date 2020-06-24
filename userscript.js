@@ -8,7 +8,6 @@
 // @match        https://sig.unb.br/sigaa/portais/*
 // @run-at       document-body
 // @grant        none
-// @noframes
 // ==/UserScript==
 
 /** Cria dicionário para mapear os números e letras aos dias e horas reais */
