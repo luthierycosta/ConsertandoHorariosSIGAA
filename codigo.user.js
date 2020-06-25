@@ -75,8 +75,7 @@ if (window.location.href == "https://sig.unb.br/sigaa/portais/discente/discente.
 var treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
 
 /** Procura por todos os textos da página e, onde reconhecer o padrão de horário, chama a mapeiaTexto() */
+var element;
 while(element = treeWalker.nextNode()){
     element.textContent = element.textContent.replace(padraoSigaa,mapeiaTexto);
  }
-
-
