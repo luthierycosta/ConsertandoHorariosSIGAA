@@ -82,6 +82,6 @@ if (document.getElementById("turmas-portal") != null) { // se existir esse eleme
 else if (window.location.href == "https://sig.unb.br/sigaa/portais/discente/turmas.jsf") {
     let colunas = document.getElementsByClassName("listagem")[0].tHead.children[0].children;
     colunas[0].width = "55%";
-    colunas[3].width = "30%";
+    colunas[3].width = "34%";
 }
 
