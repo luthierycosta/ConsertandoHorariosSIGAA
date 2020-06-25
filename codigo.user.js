@@ -67,12 +67,10 @@ var treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, 
 var element;
 while(element = treeWalker.nextNode()){
     element.textContent = element.textContent.replace(padraoSigaa,mapeiaTexto);
- }
-
+}
 
 /** Aumenta o tamanho da coluna dos horários, dependendo de qual página foi aberta */
-if (document.getElementById("turmas-portal") != null) {
-   
+if (document.getElementById("turmas-portal") != null) { // se existir esse elemento, você está na home do portal
     document
     .getElementById("turmas-portal")    // acessa a região Turmas do Semestre
     .children[2]                        // acessa a tabela com as matérias e horários
@@ -82,7 +80,8 @@ if (document.getElementById("turmas-portal") != null) {
     .width = "18%";   
 }
 else if (window.location.href == "https://sig.unb.br/sigaa/portais/discente/turmas.jsf") {
-
-    
+    let colunas = document.getElementsByClassName("listagem")[0].tHead.children[0].children;
+    colunas[0].width = "55%";
+    colunas[3].width = "30%";
 }
 
