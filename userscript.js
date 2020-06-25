@@ -2,23 +2,26 @@
 // @name         Consertando os horários do SIGAA UnB
 // @namespace    https://github.com/luthierycosta
 // @version      1.0
+// @icon         https://github.com/luthierycosta/ConsertandoHorariosSIGAA/blob/master/icon.png?raw=true
 // @description  Traduz as informações de horários das turmas no SIGAA (novo sistema da UnB), de formato pouco entendível, por dias e horas escritas por extenso.
 // @author       Luthiery Costa
 // @supportURL   https://github.com/luthierycosta
 // @match        https://sig.unb.br/sigaa/portais/*
-// @run-at       document-body
 // @grant        none
+// @noframes
 // ==/UserScript==
+
+'use strict';
 
 /** Cria dicionário para mapear os números e letras aos dias e horas reais */
 const mapaDias = {
-    2: 'Seg',
-    3: 'Ter',
-    4: 'Qua',
-    5: 'Qui',
-    6: 'Sex',
-    7: 'Sab'
-};
+    2: 'SEG',
+    3: 'TER',
+    4: 'QUA',
+    5: 'QUI',
+    6: 'SEX',
+    7: 'SAB'
+}
 const mapaHorarios = {
     'M1': {inicio: '08:00', fim: '08:50'},
     'M2': {inicio: '09:00', fim: '09:50'},
@@ -34,7 +37,7 @@ const mapaHorarios = {
     'N2': {inicio: '20:00', fim: '20:40'},
     'N3': {inicio: '20:50', fim: '21:40'},
     'N4': {inicio: '21:50', fim: '22:30'}
-};
+}
 
 /** Padrão regex que reconhece o formato de horário do SIGAA */
 const padraoSigaa = /\b([2-7])([MTN])([1-5]{1,5})\b/gm;
@@ -42,7 +45,7 @@ const padraoSigaa = /\b([2-7])([MTN])([1-5]{1,5})\b/gm;
 /**
  * Função que recebe o horário do SIGAA e retorna o texto traduzido através do dicionário acima
  *
- * @param {*} match     A string completa reconhecida pelo regex
+ * @param {*} match     O horário completo reconhecido pelo regex
  * @param {*} g1        O primeiro grupo de captura do regex - no caso, o dígito do dia da semana
  * @param {*} g2        O segundo grupo de captura do regex - no caso, a letra do turno
  * @param {*} g3        O terceiro grupo de captura do regex - no caso, o conjunto de dígitos dos horários
@@ -52,6 +55,17 @@ function mapeiaTexto(match, g1, g2, g3) {
     let hora_inicio = mapaHorarios[`${g2}${g3.charAt(0)}`].inicio;
     let hora_fim    = mapaHorarios[`${g2}${g3.charAt(g3.length-1)}`].fim;
     return `${dia}  ${hora_inicio}-${hora_fim}`;
+}
+
+/** Aumenta o tamanho da coluna dos horários, caso a página em questão seja a home do portal discente */
+if (window.location.href == "https://sig.unb.br/sigaa/portais/discente/discente.jsf") {
+    document
+        .getElementById("turmas-portal")    // acessa a região Turmas do Semestre
+        .children[2]                        // acessa a tabela com as matérias e horários
+        .children[0]                        // acessa o cabeçalho da tabela
+        .children[0]                        // acessa o cabeçalho da tabela dnv (?)
+        .children[2]                        // acessa a coluna horário
+        .width = "18%";
 }
 
 /** Objeto TreeWalker que permite navegar por todos os campos de texto da página
