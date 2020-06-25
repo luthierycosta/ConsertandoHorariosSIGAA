@@ -57,17 +57,6 @@ function mapeiaTexto(match, g1, g2, g3) {
     return `${dia}  ${hora_inicio}-${hora_fim}`;
 }
 
-/** Aumenta o tamanho da coluna dos horários, caso a página em questão seja a home do portal discente */
-if (window.location.href == "https://sig.unb.br/sigaa/portais/discente/discente.jsf") {
-    document
-        .getElementById("turmas-portal")    // acessa a região Turmas do Semestre
-        .children[2]                        // acessa a tabela com as matérias e horários
-        .children[0]                        // acessa o cabeçalho da tabela
-        .children[0]                        // acessa o cabeçalho da tabela dnv (?)
-        .children[2]                        // acessa a coluna horário
-        .width = "18%";
-}
-
 /** Objeto TreeWalker que permite navegar por todos os campos de texto da página
  * (copiado na cara dura do Stack Overflow)
  * https://stackoverflow.com/questions/39380229/replace-all-instance-of-a-string-in-a-webpage-on-click-javascript
@@ -79,3 +68,21 @@ var element;
 while(element = treeWalker.nextNode()){
     element.textContent = element.textContent.replace(padraoSigaa,mapeiaTexto);
  }
+
+
+/** Aumenta o tamanho da coluna dos horários, dependendo de qual página foi aberta */
+if (document.getElementById("turmas-portal") != null) {
+   
+    document
+    .getElementById("turmas-portal")    // acessa a região Turmas do Semestre
+    .children[2]                        // acessa a tabela com as matérias e horários
+    .children[0]                        // acessa o cabeçalho da tabela
+    .children[0]                        // acessa o cabeçalho da tabela dnv (?)
+    .children[2]                        // acessa a coluna horário
+    .width = "18%";   
+}
+else if (window.location.href == "https://sig.unb.br/sigaa/portais/discente/turmas.jsf") {
+
+    
+}
+
