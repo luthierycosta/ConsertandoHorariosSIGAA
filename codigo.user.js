@@ -2,11 +2,11 @@
 // @name         Consertando os horários do SIGAA UnB
 // @namespace    https://github.com/luthierycosta
 // @version      1.0
-// @icon         https://github.com/luthierycosta/ConsertandoHorariosSIGAA/blob/master/icon.png?raw=true
+// @icon         https://github.com/luthierycosta/ConsertandoHorariosSIGAA/blob/master/images/icon.png?raw=true
 // @description  Traduz as informações de horários das turmas no SIGAA (novo sistema da UnB), de formato pouco entendível, por dias e horas escritas por extenso.
 // @author       Luthiery Costa
 // @supportURL   https://github.com/luthierycosta
-// @match        https://sig.unb.br/sigaa/portais/*
+// @match        https://sig.unb.br/sigaa/*
 // @grant        none
 // @noframes
 // ==/UserScript==
@@ -64,9 +64,9 @@ function mapeiaTexto(match, g1, g2, g3) {
 var treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
 
 /** Procura por todos os textos da página e, onde reconhecer o padrão de horário, chama a mapeiaTexto() */
-var element;
-while(element = treeWalker.nextNode()){
-    element.textContent = element.textContent.replace(padraoSigaa,mapeiaTexto);
+var node;
+while(node = treeWalker.nextNode()){
+    node.textContent = node.textContent.replace(padraoSigaa,mapeiaTexto);
 }
 
 /** Aumenta o tamanho da coluna dos horários, dependendo de qual página foi aberta */
