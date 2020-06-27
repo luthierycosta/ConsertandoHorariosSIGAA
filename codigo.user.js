@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Consertando os horários do SIGAA UnB
 // @namespace    https://github.com/luthierycosta
-// @version      1.1
+// @version      1.0
 // @icon         https://github.com/luthierycosta/ConsertandoHorariosSIGAA/blob/master/images/icon.png?raw=true
 // @description  Traduz as informações de horários das turmas no SIGAA (novo sistema da UnB), de formato pouco entendível, por dias e horas escritas por extenso.
 // @author       Luthiery Costa
@@ -54,11 +54,11 @@ const padraoSigaa = /\b([2-7]{1,5})([MTN])([1-6]{1,6})\b/gm;
 function mapeiaTexto(match, g1, g2, g3) {
     let hora_inicio = mapaHorarios[`${g2}${g3.charAt(0)}`].inicio;
     let hora_fim    = mapaHorarios[`${g2}${g3.charAt(g3.length-1)}`].fim;
-    let retorno;
-    for (let dia of Array.from(g1))    // Para cada dia detectado (geralmente é só um)
-        retorno += `${dia}  ${hora_inicio}-${hora_fim} `;
+    let retorno = [];
+    for (var dia of g1)    // Para cada dia do horário (geralmente é só 1 por string)
+        retorno.push(`${mapaDias[dia]} ${hora_inicio}-${hora_fim}`);
     
-    return retorno;
+    return retorno.join(' ');
 }
 
 /** Objeto TreeWalker que permite navegar por todos os campos de texto da página
