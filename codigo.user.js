@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Consertando os horários do SIGAA UnB
 // @namespace    https://github.com/luthierycosta
-// @version      1.0
+// @version      1.1
 // @icon         https://github.com/luthierycosta/ConsertandoHorariosSIGAA/blob/master/images/icon.png?raw=true
 // @description  Traduz as informações de horários das turmas no SIGAA (novo sistema da UnB), de formato pouco entendível, por dias e horas escritas por extenso.
 // @author       Luthiery Costa
@@ -33,6 +33,7 @@ const mapaHorarios = {
     'T3': {inicio: '15:00', fim: '15:50'},
     'T4': {inicio: '16:00', fim: '16:50'},
     'T5': {inicio: '17:00', fim: '17:50'},
+    'T6': {inicio: '18:00', fim: '18:50'},
     'N1': {inicio: '19:00', fim: '19:50'},
     'N2': {inicio: '20:00', fim: '20:40'},
     'N3': {inicio: '20:50', fim: '21:40'},
@@ -40,21 +41,24 @@ const mapaHorarios = {
 }
 
 /** Padrão regex que reconhece o formato de horário do SIGAA */
-const padraoSigaa = /\b([2-7])([MTN])([1-5]{1,5})\b/gm;
+const padraoSigaa = /\b([2-7]{1,5})([MTN])([1-6]{1,6})\b/gm;
 
 /**
  * Função que recebe o horário do SIGAA e retorna o texto traduzido através do dicionário acima
  *
  * @param {*} match     O horário completo reconhecido pelo regex
- * @param {*} g1        O primeiro grupo de captura do regex - no caso, o dígito do dia da semana
+ * @param {*} g1        O primeiro grupo de captura do regex - no caso, o(s) dígito(s) do dia da semana
  * @param {*} g2        O segundo grupo de captura do regex - no caso, a letra do turno
  * @param {*} g3        O terceiro grupo de captura do regex - no caso, o conjunto de dígitos dos horários
  */
 function mapeiaTexto(match, g1, g2, g3) {
-    let dia         = mapaDias[g1];
     let hora_inicio = mapaHorarios[`${g2}${g3.charAt(0)}`].inicio;
     let hora_fim    = mapaHorarios[`${g2}${g3.charAt(g3.length-1)}`].fim;
-    return `${dia}  ${hora_inicio}-${hora_fim}`;
+    let retorno;
+    for (let dia of g1)    // Para cada dia detectado (geralmente é só um)
+        retorno += `${dia}  ${hora_inicio}-${hora_fim} `;
+    
+    return retorno;
 }
 
 /** Objeto TreeWalker que permite navegar por todos os campos de texto da página
