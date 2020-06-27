@@ -55,7 +55,7 @@ function mapeiaTexto(match, g1, g2, g3) {
     let hora_inicio = mapaHorarios[`${g2}${g3.charAt(0)}`].inicio;
     let hora_fim    = mapaHorarios[`${g2}${g3.charAt(g3.length-1)}`].fim;
     let retorno;
-    for (let dia of g1)    // Para cada dia detectado (geralmente é só um)
+    for (let dia of Array.from(g1))    // Para cada dia detectado (geralmente é só um)
         retorno += `${dia}  ${hora_inicio}-${hora_fim} `;
     
     return retorno;
