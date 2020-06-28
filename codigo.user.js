@@ -84,8 +84,16 @@ if (document.getElementById("turmas-portal") != null) { // nesse caso a página 
     .width = "18%";   
 }
 else if (document.getElementsByClassName("listagem") != undefined) { // nesse caso a página é a das turmas anteriores
+    let url = window.location.href;
     let colunas = document.getElementsByClassName("listagem")[0].tHead.children[0].children;
-    colunas[0].width = "55%";
-    colunas[3].width = "34%";
+    for (var coluna of colunas) {
+        if (coluna.innerText.includes("Horário")) {
+            coluna.width =  url.includes("sigaa/graduacao/matricula/turmas_curriculo.jsf")              ? "35%" :
+                            url.includes("sigaa/graduacao/matricula/turmas_equivalentes_curriculo.jsf") ? "13%" :
+                            url.includes("sigaa/graduacao/matricula/turmas_extra_curriculo.jsf")        ? "12%" :
+                            url.includes("sigaa/portais/discente/turmas.jsf")                           ? "34%" :
+                            coluna.width;
+        }
+    }
 }
 
