@@ -24,7 +24,7 @@ A extensão não está nas lojas oficiais dos navegadores, por ser um simples sc
   1. Instale a extensão Tampermonkey [por este link](https://www.tampermonkey.net/), escolhendo o navegador e baixando a opção da esquerda (geralmente a mais estável). O botão te redireciona para a loja oficial do navegador. ***Obs**: Não está disponível para Chrome no celular já que ele não permite extensões*.
   2. Com a extensão instalada, clique [aqui](https://github.com/luthierycosta/ConsertandoHorariosSIGAA/raw/master/codigo.user.js) para baixar o código no Tampermonkey. Lá você pode ver uma explicação breve assim como checar o script inteiro antes de instalar. Clique em `Instalar` e pronto!
 
-A extensão aparecerá junto com as outras que você usa no canto da tela. Abrindo a janelinha do Tampermonkey você encontra, por ex., o *Painel de Opções* que te mostra todos os scripts instalados (é pra ter o meu lá) e o botão de *atualizar scripts* que vai pegar o código direto desse repositório, caso eu o modifique ao longo do tempo.
+A extensão aparecerá junto com as outras que você usa no canto da tela. Abrindo a janelinha do Tampermonkey você encontra, por ex., o **Painel de Opções** que te mostra todos os scripts instalados (é pra ter o meu lá) e o botão de **atualizar scripts** que vai pegar o código direto desse repositório, caso eu o modifique ao longo do tempo.
 
 ![dash](images/dashboard_tm.png)
 
