@@ -1,4 +1,4 @@
-# Consertando os Horários do SIGAA [![unb](images/unb_logo.png)](unb.br)
+# Consertando os Horários do SIGAA [![unb](images/unb_logo.png)](https://unb.br)
 
 Em maio de 2020, com as aulas suspensas, a UnB introduziu um sistema diferente de gestão a seus alunos e professores: o [SIGAA](https://sig.unb.br/sigaa/), a exemplo de várias outras universidades pelo país. Uma funcionalidade nova que vem causando incômodo é o formato em que são informadas os horários das turmas. Ao invés de mostrarem horas e dias por extenso como era antes no MatriculaWeb, elas foram codificadas de um jeito difícil de entender à primeira vista.
 
