@@ -12,11 +12,6 @@ Certamente há motivos técnicos para se adotar uma representação assim. No en
 
 Trata-se de um script que roda no seu navegador web, procurando esse formato de horário específico do SIGAA por toda a página e trocando-os para dias e horas escritos por extenso. Ele não faz nenhum tipo de acesso aos servidores internos da UnB, trabalha apenas com o que já foi carregado na página.
 
-Até agora, as páginas onde eu sei que os horários se encontram são (podem aparecer mais depois):
-* página inicial do Portal Discente;
-* página "turmas anteriores", onde se encontra seu histórico de todas as disciplinas cursadas;
-* página principal da turma (substituta do Aprender).
-
 ### Antes / depois:
 
 ![old](images/old.png) ![new](images/new.png)
@@ -37,5 +32,8 @@ Ali mostra que nenhum script está sendo executado. Quando você entrar no SIGAA
 
 ![dash](images/dashboard_com_script.png)
 
+***
+### Encontrou bugs ou alguma página onde ele não ativa?
+Me avisa pelo [Twitter](https://twitter.com/luthierycosta) ou aqui mesmo no Github, na aba "Issues" ali em cima.
 ***
 O ideal é que o sistema mostre essa informação intuitivamente sem precisar de uma gambiarra de um terceiro. Enquanto esse dia não chega, temos essa alternativa. Obrigado por baixar galera! Usem e divulguem com os amigos unbersitários. Enois :heart:
