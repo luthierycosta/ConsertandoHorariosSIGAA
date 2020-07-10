@@ -36,4 +36,4 @@ Ali mostra que nenhum script está sendo executado. Quando você entrar no SIGAA
 ### Encontrou bugs ou alguma página onde ele não ativa?
 Me avisa pelo [Twitter](https://twitter.com/luthierycosta) ou aqui mesmo no Github, na aba "Issues" ali em cima.
 ***
-O ideal é que o sistema mostre essa informação intuitivamente sem precisar de uma gambiarra de um terceiro. Enquanto esse dia não chega, temos essa alternativa. Obrigado por baixar galera! Usem e divulguem com os amigos unbersitários. Enois :heart:
+O ideal é que o sistema mostre essa informação intuitivamente sem precisar de uma gambiarra de um terceiro. Enquanto esse dia não chega, temos essa alternativa. Obrigado por baixar galera! Usem e divulguem com os amigos unbersitários. Enois :heart: :cowboy_hat_face:
