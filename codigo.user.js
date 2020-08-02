@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Consertando os horários do SIGAA UnB
 // @namespace    https://github.com/luthierycosta
-// @version      1.1.3
+// @version      1.2.1
 // @icon         https://github.com/luthierycosta/ConsertandoHorariosSIGAA/blob/master/images/icon.png?raw=true
 // @description  Traduz as informações de horários das turmas no SIGAA (novo sistema da UnB), de formato pouco entendível, por dias e horas escritas por extenso.
 // @author       Luthiery Costa
@@ -42,7 +42,7 @@ const mapaHorarios = {
 }
 
 /** Padrão regex que reconhece o formato de horário do SIGAA */
-const padraoSigaa = /\b([2-7]{1,5})([MTN])([1-7]{1,7})\b/gm;
+const padraoSigaa = /\b([2-7]{1,5})([MTN]{1,2})([1-7]{1,7})\b/gm;
 
 /**
  * Função que recebe o horário do SIGAA e retorna o texto traduzido através do dicionário acima
@@ -56,7 +56,7 @@ function mapeiaTexto(match, g1, g2, g3) {
     let hora_inicio = mapaHorarios[`${g2}${g3.charAt(0)}`].inicio;
     let hora_fim    = mapaHorarios[`${g2}${g3.charAt(g3.length-1)}`].fim;
     let retorno = [];
-    for (var dia of g1)    // Para cada dia do horário (geralmente é só 1 por string)
+    for (let dia of g1)    // Para cada dia do horário (geralmente é só 1 por string)
         retorno.push(`${mapaDias[dia]} ${hora_inicio}-${hora_fim}`);
     
     return retorno.join(' ');
@@ -64,10 +64,15 @@ function mapeiaTexto(match, g1, g2, g3) {
 
 /** Objeto TreeWalker que permite navegar por todos os campos de texto da página
 */
-var treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+const treeWalker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    {acceptNode: (node) => padraoSigaa.test(node.textContent) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP},
+    false
+);
 
 /** Procura por todos os textos da página e, onde reconhecer o padrão de horário, chama a mapeiaTexto() */
-var node;
+let node;
 while(node = treeWalker.nextNode()){
     node.textContent = node.textContent.replace(padraoSigaa,mapeiaTexto);
 }
@@ -85,7 +90,7 @@ if (document.getElementById("turmas-portal") != null) { // nesse caso a página 
 else if (document.getElementsByClassName("listagem") != undefined) { // nesse caso é uma das páginas abaixo
     let url = window.location.href;
     let colunas = document.getElementsByClassName("listagem")[0].tHead.children[0].children;
-    for (var coluna of colunas) {
+    for (let coluna of colunas) {
         if (coluna.innerText.includes("Horário")) {
             coluna.width =  url.includes("sigaa/graduacao/matricula/turmas_curriculo.jsf")              ? "35%" :
                             url.includes("sigaa/graduacao/matricula/turmas_equivalentes_curriculo.jsf") ? "13%" :
