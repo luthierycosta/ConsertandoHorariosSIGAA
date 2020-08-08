@@ -42,7 +42,7 @@ const mapaHorarios = {
 }
 
 /** Padrão regex que reconhece o formato de horário do SIGAA */
-const padraoSigaa = /\b([2-7]{1,5})([MTN]{1,2})([1-7]{1,7})\b/gm;
+const padraoSigaa = /\b([2-7]{1,5})([MTN])([1-7]{1,7})\b/gm;
 
 /**
  * Função que recebe o horário do SIGAA e retorna o texto traduzido através do dicionário acima
