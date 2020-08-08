@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Consertando os horários do SIGAA UnB
 // @namespace    https://github.com/luthierycosta
-// @version      1.1.4
+// @version      1.2.0
 // @icon         https://github.com/luthierycosta/ConsertandoHorariosSIGAA/blob/master/images/icon.png?raw=true
 // @description  Traduz as informações de horários das turmas no SIGAA (novo sistema da UnB), de formato pouco entendível, por dias e horas escritas por extenso.
 // @author       Luthiery Costa
@@ -52,24 +52,47 @@ const padraoSigaa = /\b([2-7]{1,5})([MTN])([1-7]{1,7})\b/gm;
  * @param {*} g2        O segundo grupo de captura do regex - no caso, a letra do turno
  * @param {*} g3        O terceiro grupo de captura do regex - no caso, o conjunto de dígitos dos horários
  */
-function mapeiaTexto(match, g1, g2, g3) {
-    let hora_inicio = mapaHorarios[`${g2}${g3.charAt(0)}`].inicio;
-    let hora_fim    = mapaHorarios[`${g2}${g3.charAt(g3.length-1)}`].fim;
+function mapeiaHorarios(match, g1, g2, g3) {
+    const first = (str) => str.charAt(0);
+    const last = (str) => str.charAt(str.length-1);
+
+    let dia         = mapaDias[g1];
+    let hora_inicio = mapaHorarios[`${first(g2)}${first(g3)}`].inicio;
+    let hora_fim    = mapaHorarios[`${last(g2)}${last(g3)}`].fim;
+    return `${dia} ${hora_inicio}-${hora_fim}`;
+}
+
+function separaDias(match, g1, g2, g3) {
     let retorno = [];
-    for (var dia of g1)    // Para cada dia do horário (geralmente é só 1 por string)
-        retorno.push(`${mapaDias[dia]} ${hora_inicio}-${hora_fim}`);
-    
+    for (let dia of g1)
+        retorno.push(`${dia}${g2}${g3}`);
+
     return retorno.join(' ');
+}
+
+function ordenaDias(texto) {
+    return [...texto.matchAll(padraoSigaa)]
+        .sort((a,b) =>  a[1] < b[1] ? -1 :
+                        a[1] > b[1] ? 1 : 0)
+        .map(match => match[0])
+        .join(' ');
 }
 
 /** Objeto TreeWalker que permite navegar por todos os campos de texto da página
 */
-var treeWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+const treeWalker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT,
+    {acceptNode: (node) => padraoSigaa.test(node.textContent) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP},
+    false
+);
 
-/** Procura por todos os textos da página e, onde reconhecer o padrão de horário, chama a mapeiaTexto() */
-var node;
+/** Procura por todos os textos da página e, onde reconhecer o padrão de horário, chama a mapeiaHorarios() */
+let node;
 while(node = treeWalker.nextNode()){
-    node.textContent = node.textContent.replace(padraoSigaa,mapeiaTexto);
+    node.textContent = node.textContent.replace(padraoSigaa,separaDias);
+    node.textContent = ordenaDias(node.textContent);
+    node.textContent = node.textContent.replace(padraoSigaa,mapeiaHorarios);
 }
 
 /** Altera o tamanho da coluna dos horários, dependendo de qual página foi aberta */
@@ -85,7 +108,7 @@ if (url.includes("portais/discente/discente.jsf")) { // nesse caso a página car
 }
 else if (document.getElementsByClassName("listagem") != undefined) { // nesse caso é uma das páginas abaixo
     let colunas = document.getElementsByClassName("listagem")[0].tHead.children[0].children;
-    for (var coluna of colunas) {
+    for (let coluna of colunas) {
         if (coluna.innerText.includes("Horário")) {
             coluna.width =  url.includes("graduacao/matricula/turmas_curriculo.jsf")              ? "35%" :
                             url.includes("graduacao/matricula/turmas_equivalentes_curriculo.jsf") ? "13%" :
