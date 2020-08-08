@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Consertando os horários do SIGAA UnB
 // @namespace    https://github.com/luthierycosta
-// @version      1.2.1
+// @version      1.2.0
 // @icon         https://github.com/luthierycosta/ConsertandoHorariosSIGAA/blob/master/images/icon.png?raw=true
 // @description  Traduz as informações de horários das turmas no SIGAA (novo sistema da UnB), de formato pouco entendível, por dias e horas escritas por extenso.
 // @author       Luthiery Costa
@@ -95,8 +95,9 @@ while(node = treeWalker.nextNode()){
     node.textContent = node.textContent.replace(padraoSigaa,mapeiaHorarios);
 }
 
-/** Aumenta o tamanho da coluna dos horários, dependendo de qual página foi aberta */
-if (document.getElementById("turmas-portal") != null) { // nesse caso a página carregada é a home do portal
+/** Altera o tamanho da coluna dos horários, dependendo de qual página foi aberta */
+let url = window.location.href;
+if (url.includes("portais/discente/discente.jsf")) { // nesse caso a página carregada é a home do portal
     document
     .getElementById("turmas-portal")    // acessa a região Turmas do Semestre
     .children[2]                        // acessa a tabela com as matérias e horários
@@ -106,14 +107,14 @@ if (document.getElementById("turmas-portal") != null) { // nesse caso a página 
     .width = "18%";   
 }
 else if (document.getElementsByClassName("listagem") != undefined) { // nesse caso é uma das páginas abaixo
-    let url = window.location.href;
     let colunas = document.getElementsByClassName("listagem")[0].tHead.children[0].children;
     for (let coluna of colunas) {
         if (coluna.innerText.includes("Horário")) {
-            coluna.width =  url.includes("sigaa/graduacao/matricula/turmas_curriculo.jsf")              ? "35%" :
-                            url.includes("sigaa/graduacao/matricula/turmas_equivalentes_curriculo.jsf") ? "13%" :
-                            url.includes("sigaa/graduacao/matricula/turmas_extra_curriculo.jsf")        ? "12%" :
-                            url.includes("sigaa/portais/discente/turmas.jsf")                           ? "34%" :
+            coluna.width =  url.includes("graduacao/matricula/turmas_curriculo.jsf")              ? "35%" :
+                            url.includes("graduacao/matricula/turmas_equivalentes_curriculo.jsf") ? "13%" :
+                            url.includes("graduacao/matricula/turmas_extra_curriculo.jsf")        ? "12%" :
+                            url.includes("portais/discente/turmas.jsf")                           ? "34%" :
+                            url.includes("public/turmas/listar.jsf")                              ? "13%" :
                             coluna.width;
         }
     }
