@@ -114,7 +114,7 @@ Array.from(document.querySelectorAll("tHead th"))              // seleciona todo
                 url.includes("graduacao/matricula/turmas_extra_curriculo.jsf")        ? "12%" :
                 url.includes("portais/discente/turmas.jsf")                           ? "34%" :
                 url.includes("public/turmas/listar.jsf")                              ? "13%" :
-                coluna.width
+                col.width
 );
 
 
