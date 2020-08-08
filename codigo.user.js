@@ -52,14 +52,30 @@ const padraoSigaa = /\b([2-7]{1,5})([MTN]{1,2})([1-7]{1,7})\b/gm;
  * @param {*} g2        O segundo grupo de captura do regex - no caso, a letra do turno
  * @param {*} g3        O terceiro grupo de captura do regex - no caso, o conjunto de dígitos dos horários
  */
-function mapeiaTexto(match, g1, g2, g3) {
-    let hora_inicio = mapaHorarios[`${g2}${g3.charAt(0)}`].inicio;
-    let hora_fim    = mapaHorarios[`${g2}${g3.charAt(g3.length-1)}`].fim;
+function mapeiaHorarios(match, g1, g2, g3) {
+    const first = (str) => str.charAt(0);
+    const last = (str) => str.charAt(str.length-1);
+
+    let dia         = mapaDias[g1];
+    let hora_inicio = mapaHorarios[`${first(g2)}${first(g3)}`].inicio;
+    let hora_fim    = mapaHorarios[`${last(g2)}${last(g3)}`].fim;
+    return `${dia} ${hora_inicio}-${hora_fim}`;
+}
+
+function separaDias(match, g1, g2, g3) {
     let retorno = [];
-    for (let dia of g1)    // Para cada dia do horário (geralmente é só 1 por string)
-        retorno.push(`${mapaDias[dia]} ${hora_inicio}-${hora_fim}`);
-    
+    for (let dia of g1)
+        retorno.push(`${dia}${g2}${g3}`);
+
     return retorno.join(' ');
+}
+
+function ordenaDias(texto) {
+    return [...texto.matchAll(padraoSigaa)]
+        .sort((a,b) =>  a[1] < b[1] ? -1 :
+                        a[1] > b[1] ? 1 : 0)
+        .map(match => match[0])
+        .join(' ');
 }
 
 /** Objeto TreeWalker que permite navegar por todos os campos de texto da página
@@ -71,10 +87,12 @@ const treeWalker = document.createTreeWalker(
     false
 );
 
-/** Procura por todos os textos da página e, onde reconhecer o padrão de horário, chama a mapeiaTexto() */
+/** Procura por todos os textos da página e, onde reconhecer o padrão de horário, chama a mapeiaHorarios() */
 let node;
 while(node = treeWalker.nextNode()){
-    node.textContent = node.textContent.replace(padraoSigaa,mapeiaTexto);
+    node.textContent = node.textContent.replace(padraoSigaa,separaDias);
+    node.textContent = ordenaDias(node.textContent);
+    node.textContent = node.textContent.replace(padraoSigaa,mapeiaHorarios);
 }
 
 /** Aumenta o tamanho da coluna dos horários, dependendo de qual página foi aberta */
