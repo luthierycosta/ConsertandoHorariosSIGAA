@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Consertando os horários do SIGAA UnB
 // @namespace    https://github.com/luthierycosta
-// @version      1.2.1
+// @version      1.2.2
 // @icon         https://github.com/luthierycosta/ConsertandoHorariosSIGAA/blob/master/images/icon.png?raw=true
 // @description  Traduz as informações de horários das turmas no SIGAA (novo sistema da UnB), de formato pouco entendível, por dias e horas escritas por extenso.
 // @author       Luthiery Costa
@@ -112,6 +112,7 @@ Array.from(document.querySelectorAll("tHead th"))              // seleciona todo
     col.width = url.includes("graduacao/matricula/turmas_curriculo.jsf")              ? "35%" :
                 url.includes("graduacao/matricula/turmas_equivalentes_curriculo.jsf") ? "13%" :
                 url.includes("graduacao/matricula/turmas_extra_curriculo.jsf")        ? "12%" :
+                url.includes("portais/discente/discente.jsf")                         ? "18%" :
                 url.includes("portais/discente/turmas.jsf")                           ? "34%" :
                 url.includes("public/turmas/listar.jsf")                              ? "13%" :
                 col.width
