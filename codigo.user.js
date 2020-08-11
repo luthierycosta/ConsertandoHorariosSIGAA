@@ -95,6 +95,7 @@ function ordenaDias(texto) {
                      `${horarios[i][1]}${horarios[j][1]}`,
                      `${horarios[i][2]}${horarios[j][2]}`]
                 );
+                visitado[j] = true;
             } else {
                 turnos_juntos.push(
                     [`${horarios[i][0]}`,
@@ -102,7 +103,6 @@ function ordenaDias(texto) {
                      `${horarios[i][2]}`]
                 );
             }
-            visitado[j] = true;
         } 
     }
     
