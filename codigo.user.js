@@ -81,35 +81,21 @@ function ordenaDias(texto) {
                  `${horario[3]}`]
             );
 
-    let turnos_juntos = [];
-    let visitado = [];
-    
-    for (let i = 0; i < horarios.length; i++) {   
-        if (visitado[i])
-            continue;
+    let dias = [];
+    for (let horario of horarios) {
+        if (!dias[horario[0]])
+            dias[horario[0]] = [];
         
-        for (let j = i+1; j < horarios.length; j++) {
-            if (horarios[i][0] == horarios[j][0]) {
-                turnos_juntos.push(
-                    [`${horarios[i][0]}`,
-                     `${horarios[i][1]}${horarios[j][1]}`,
-                     `${horarios[i][2]}${horarios[j][2]}`]
-                );
-                visitado[j] = true;
-            } else {
-                turnos_juntos.push(
-                    [`${horarios[i][0]}`,
-                     `${horarios[i][1]}`,
-                     `${horarios[i][2]}`]
-                );
-            }
-        } 
+        dias[horario[0]].push([ `${horario[1]}`,
+                                `${horario[2]}`])
     }
+    horarios = dias.map((dia, i) => 
+        i + dia.map(digito => digito[0]).join('') + dia.map(digito => digito[1]).join('')
+    );
     
-    return turnos_juntos
+    return horarios
         .sort((a,b) =>  a[0] < b[0] ? -1 :
                         a[0] > b[0] ? 1 : 0)
-        .map((match) => `${match[0]}${match[1]}${match[2]}`)
         .join(' ');
 }
 
@@ -126,6 +112,7 @@ const treeWalker = document.createTreeWalker(
 /** Procura por todos os textos da página e, onde reconhecer o padrão de horário, chama a mapeiaHorarios() */
 let node;
 while(node = treeWalker.nextNode()){
+    node.textContent = node.textContent.replace(padraoSigaa,separaDias);
     node.textContent = ordenaDias(node.textContent);
     node.textContent = node.textContent.replace(padraoSigaa,mapeiaHorarios);
 }
