@@ -73,8 +73,8 @@ function separaDias(match, g1, g2, g3) {
 function ordenaDias(texto) {
 
     let horarios = [];
-    for (horario of [...texto.matchAll(padraoSigaa)])
-        for (dia of horario[1])
+    for (let horario of [...texto.matchAll(padraoSigaa)])
+        for (let dia of horario[1])
             horarios.push(
                 [`${dia}`,
                  `${horario[2]}`,
