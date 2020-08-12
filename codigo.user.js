@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Consertando os horários do SIGAA UnB
 // @namespace    https://github.com/luthierycosta
-// @version      1.2.2
+// @version      1.2.3
 // @icon         https://github.com/luthierycosta/ConsertandoHorariosSIGAA/blob/master/images/icon.png?raw=true
 // @description  Traduz as informações de horários das turmas no SIGAA (novo sistema da UnB), de formato pouco entendível, por dias e horas escritas por extenso.
 // @author       Luthiery Costa
@@ -42,7 +42,7 @@ const mapaHorarios = {
 }
 
 /** Padrão regex que reconhece o formato de horário do SIGAA */
-const padraoSigaa = /\b([2-7]{1,5})([MTN])([1-7]{1,7})\b/gm;
+const padraoSigaa = /\b([2-7]{1,5})([MTN]{1,3})([1-7]{1,7})\b/gm;
 
 /**
  * Função que recebe o horário do SIGAA e retorna o texto traduzido através do dicionário acima
@@ -63,18 +63,31 @@ function mapeiaHorarios(match, g1, g2, g3) {
 }
 
 function separaDias(match, g1, g2, g3) {
-    let retorno = [];
-    for (let dia of g1)
-        retorno.push(`${dia}${g2}${g3}`);
-
-    return retorno.join(' ');
+    return [...g1].map(dia => `${dia}${g2}${g3}`).join(' ');
 }
 
 function ordenaDias(texto) {
-    return [...texto.matchAll(padraoSigaa)]
-        .sort((a,b) =>  a[1] < b[1] ? -1 :
-                        a[1] > b[1] ? 1 : 0)
-        .map(match => match[0])
+
+    let horarios = [...texto.matchAll(padraoSigaa)]
+                    .map((horario) => [`${horario[1]}`,`${horario[2]}`,`${horario[3]}`]);
+
+    let dias = [];
+    for (let horario of horarios) {
+        if (!dias[horario[0]])
+            dias[horario[0]] = [];
+        
+        dias[horario[0]].push([`${horario[0]}`,`${horario[1]}`,`${horario[2]}`]);
+    }
+
+    horarios = dias.map((dia) =>
+        dia[0][0] +
+        dia.map(digito => digito[1]).join('') +
+        dia.map(digito => digito[2]).join('')
+    );
+    
+    return horarios
+        .sort((a,b) => a[0] < b[0] ? -1 :
+                       a[0] > b[0] ? 1 : 0)
         .join(' ');
 }
 
@@ -117,5 +130,3 @@ Array.from(document.querySelectorAll("tHead th"))              // seleciona todo
                 url.includes("public/turmas/listar.jsf")                              ? "13%" :
                 col.width
 );
-
-
