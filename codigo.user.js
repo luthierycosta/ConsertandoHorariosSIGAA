@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Consertando os horários do SIGAA UnB
 // @namespace    https://github.com/luthierycosta
-// @version      1.2.3
+// @version      1.2.4
 // @icon         https://github.com/luthierycosta/ConsertandoHorariosSIGAA/blob/master/images/icon.png?raw=true
 // @description  Traduz as informações de horários das turmas no SIGAA (novo sistema da UnB), de formato pouco entendível, por dias e horas escritas por extenso.
 // @author       Luthiery Costa
@@ -42,52 +42,50 @@ const mapaHorarios = {
 }
 
 /** Padrão regex que reconhece o formato de horário do SIGAA */
-const padraoSigaa = /\b([2-7]{1,5})([MTN]{1,3})([1-7]{1,7})\b/gm;
+const padraoSigaa = /\b([2-7]{1,5})([MTN])([1-7]{1,7})\b/gm;
 
 /**
  * Função que recebe o horário do SIGAA e retorna o texto traduzido através do dicionário acima
  *
  * @param {*} match     O horário completo reconhecido pelo regex
- * @param {*} g1        O primeiro grupo de captura do regex - no caso, o(s) dígito(s) do dia da semana
+ * @param {*} g1        O primeiro grupo de captura do regex - no caso, o dígito do dia da semana
  * @param {*} g2        O segundo grupo de captura do regex - no caso, a letra do turno
  * @param {*} g3        O terceiro grupo de captura do regex - no caso, o conjunto de dígitos dos horários
  */
 function mapeiaHorarios(match, g1, g2, g3) {
-    const first = (str) => str.charAt(0);
-    const last = (str) => str.charAt(str.length-1);
-
     let dia         = mapaDias[g1];
-    let hora_inicio = mapaHorarios[`${first(g2)}${first(g3)}`].inicio;
-    let hora_fim    = mapaHorarios[`${last(g2)}${last(g3)}`].fim;
+    let hora_inicio = mapaHorarios[`${g2}${g3.charAt(0)}`].inicio;
+    let hora_fim    = mapaHorarios[`${g2}${g3.charAt(g3.length-1)}`].fim;
     return `${dia} ${hora_inicio}-${hora_fim}`;
 }
 
+/**
+ * Função que separa os dias para que toda "palavra" de horário tenha só 1 dígito de dia antes do turno.
+ * ex: 246M12 vira 2M12 4M12 6M12.
+ * 
+ * Quando já está devidamente separado, retorna o mesmo texto.
+ * 
+ * @param {*} match     O horário completo reconhecido pelo regex
+ * @param {*} g1        O primeiro grupo de captura do regex - no caso, o(s) dígito(s) do dia da semana
+ * @param {*} g2        O segundo grupo de captura do regex - no caso, a letra do turno
+ * @param {*} g3        O terceiro grupo de captura do regex - no caso, o conjunto de dígitos dos horários
+ */
 function separaDias(match, g1, g2, g3) {
     return [...g1].map(dia => `${dia}${g2}${g3}`).join(' ');
 }
 
+/** 
+ * Função que recebe o texto com os horários e o ordena pela ordem dos dias da semana
+ * Ou seja, o primeiro dígito de cada "palavra".
+ * 
+ * @param {*} texto     O texto HTML dos horários separados por espaço, que já foi tratado pela separaDias().
+ * @returns   O texto com os horários ordenados separados por espaço.
+ */
 function ordenaDias(texto) {
-
-    let horarios = [...texto.matchAll(padraoSigaa)]
-                    .map((horario) => [`${horario[1]}`,`${horario[2]}`,`${horario[3]}`]);
-
-    let dias = [];
-    for (let horario of horarios) {
-        if (!dias[horario[0]])
-            dias[horario[0]] = [];
-        
-        dias[horario[0]].push([`${horario[0]}`,`${horario[1]}`,`${horario[2]}`]);
-    }
-
-    horarios = dias.map((dia) =>
-        dia[0][0] +
-        dia.map(digito => digito[1]).join('') +
-        dia.map(digito => digito[2]).join('')
-    );
-    
-    return horarios
-        .sort((a,b) => a[0] < b[0] ? -1 :
-                       a[0] > b[0] ? 1 : 0)
+    return [...texto.matchAll(padraoSigaa)]
+        .sort((a,b) => a[1] < b[1] ? -1 :
+                       a[1] > b[1] ? 1 : 0)
+        .map(a => a[0])
         .join(' ');
 }
 
@@ -101,12 +99,15 @@ const treeWalker = document.createTreeWalker(
     false
 );
 
-/** Procura por todos os textos da página e, onde reconhecer o padrão de horário, chama a mapeiaHorarios() */
+/** Procura por todos os textos e, onde reconhecer o padrão de horário, executa a substituição */
 let node;
 while(node = treeWalker.nextNode()){
     node.textContent = node.textContent.replace(padraoSigaa,separaDias);
     node.textContent = ordenaDias(node.textContent);
     node.textContent = node.textContent.replace(padraoSigaa,mapeiaHorarios);
+    
+    // por fim, junta as ocorrências 12:00-12:55/12:55-13:50 em simplesmente 12:00-13:50
+    node.textContent = node.textContent.replace(/([A-Z]{3}) 12:00-12:55 ([A-Z]{3}) 12:55-13:50/gm, '$1 12:00-13:50')
 }
 
 let url = window.location.href;
