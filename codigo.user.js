@@ -6,7 +6,7 @@
 // @description  Traduz as informações de horários das turmas no SIGAA (novo sistema da UnB), de formato pouco entendível, por dias e horas escritas por extenso.
 // @author       Luthiery Costa
 // @supportURL   https://github.com/luthierycosta
-// @match        https://sig.unb.br/sigaa/*
+// @match        https://sigaa.unb.br/sigaa/*
 // @grant        none
 // @noframes
 // ==/UserScript==
